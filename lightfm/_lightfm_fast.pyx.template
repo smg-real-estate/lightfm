@@ -113,13 +113,17 @@ cdef struct Pair:
 
 cdef int reverse_pair_compare(const_void *a, const_void *b) noexcept nogil:
 
-    cdef flt diff
+    cdef flt a_val = (<Pair*>a).val
+    cdef flt b_val = (<Pair*>b).val
 
-    diff = ((<Pair*>a)).val - ((<Pair*>b)).val
-    if diff < 0:
+    # Sort in descending order of val. Return 0 on equality so the
+    # comparator stays antisymmetric and honours the qsort contract.
+    if a_val < b_val:
         return 1
-    else:
+    elif a_val > b_val:
         return -1
+    else:
+        return 0
 
 
 cdef int int_compare(const_void *a, const_void *b) noexcept nogil:
